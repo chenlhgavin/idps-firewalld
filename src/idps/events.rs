@@ -27,14 +27,16 @@ impl IntegrationEvent {
     #[must_use]
     pub fn from_client_event(event: ClientEvent) -> Self {
         match event {
-            ClientEvent::RegistrationResult(response) => Self::RegistrationSucceeded(response.state),
+            ClientEvent::RegistrationResult(response) => {
+                Self::RegistrationSucceeded(response.state)
+            }
             ClientEvent::ReportAck(_) => Self::ReportAcknowledged,
-            ClientEvent::Heartbeat(_) => Self::Heartbeat,
             ClientEvent::Disconnected(event) => Self::Disconnected(event.message),
             ClientEvent::RequestFailure(event) => Self::RequestFailed {
                 operation: event.operation,
                 message: event.message,
             },
+            _ => Self::Heartbeat,
         }
     }
 }

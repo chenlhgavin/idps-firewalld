@@ -84,7 +84,10 @@ impl FirewalldEventSubscription {
     pub async fn recv(&mut self) -> Result<IntegrationEvent> {
         match &mut self.inner {
             SubscriptionInner::Real(inner) => {
-                let event = inner.recv().await.map_err(|error| anyhow!(error.to_string()))?;
+                let event = inner
+                    .recv()
+                    .await
+                    .map_err(|error| anyhow!(error.to_string()))?;
                 Ok(IntegrationEvent::from_client_event(event))
             }
             SubscriptionInner::Mock(inner) => inner
@@ -107,7 +110,10 @@ impl FirewalldSdkClient {
     /// # Errors
     ///
     /// Returns an error if runtime config loading or transport bootstrap fails.
-    pub async fn connect(config: &FirewallConfig, cancellation: CancellationToken) -> Result<Self, ClientError> {
+    pub async fn connect(
+        config: &FirewallConfig,
+        cancellation: CancellationToken,
+    ) -> Result<Self, ClientError> {
         let client_config = idps_client::runtime_config::load_client_config_from_path(
             config.runtime_config_path.clone(),
         )?;
@@ -119,7 +125,6 @@ impl FirewalldSdkClient {
         .await?;
         Ok(Self { inner })
     }
-
 }
 
 #[async_trait]
