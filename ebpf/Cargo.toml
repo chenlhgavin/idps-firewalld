@@ -1,0 +1,22 @@
+[package]
+name = "idps-firewalld-ebpf"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[[bin]]
+name = "idps-firewalld-ebpf"
+path = "src/main.rs"
+
+[dependencies]
+aya-ebpf = "~0.1"
+aya-log-ebpf = "~0.1"
+bytemuck = { version = "~1.19", features = ["derive"] }
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
+lto = true
+codegen-units = 1

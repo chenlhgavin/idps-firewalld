@@ -1,1 +1,4 @@
-//! Operational diagnostics will be added in later stages.
+//! Operational diagnostics.
+
+pub mod health;
+pub mod stats;

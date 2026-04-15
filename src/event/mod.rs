@@ -1,1 +1,4 @@
-//! Event pipeline modules will be added in later stages.
+//! Event pipeline and business classification.
+
+pub mod classify;
+pub mod pipeline;

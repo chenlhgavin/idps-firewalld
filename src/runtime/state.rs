@@ -22,6 +22,37 @@ pub enum RuntimePhase {
 }
 
 impl RuntimePhase {
+    /// Return the stable string representation used by health snapshots.
+    #[must_use]
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Init => "Init",
+            Self::Bootstrap => "Bootstrap",
+            Self::Registering => "Registering",
+            Self::RuleSyncing => "RuleSyncing",
+            Self::DataPlaneReady => "DataPlaneReady",
+            Self::Running => "Running",
+            Self::Reconnect => "Reconnect",
+            Self::Shutdown => "Shutdown",
+        }
+    }
+
+    /// Parse a persisted runtime phase string.
+    #[must_use]
+    pub fn from_str(value: &str) -> Option<Self> {
+        match value {
+            "Init" => Some(Self::Init),
+            "Bootstrap" => Some(Self::Bootstrap),
+            "Registering" => Some(Self::Registering),
+            "RuleSyncing" => Some(Self::RuleSyncing),
+            "DataPlaneReady" => Some(Self::DataPlaneReady),
+            "Running" => Some(Self::Running),
+            "Reconnect" => Some(Self::Reconnect),
+            "Shutdown" => Some(Self::Shutdown),
+            _ => None,
+        }
+    }
+
     /// Return whether a transition is allowed by the stage-1 lifecycle model.
     #[must_use]
     pub const fn can_transition_to(self, next: Self) -> bool {
@@ -32,7 +63,14 @@ impl RuntimePhase {
                 | (Self::Registering, Self::RuleSyncing)
                 | (Self::RuleSyncing, Self::DataPlaneReady)
                 | (Self::DataPlaneReady, Self::Running)
-                | (Self::Running, Self::Reconnect)
+                | (
+                    Self::Bootstrap
+                        | Self::Registering
+                        | Self::RuleSyncing
+                        | Self::DataPlaneReady
+                        | Self::Running,
+                    Self::Reconnect,
+                )
                 | (_, Self::Shutdown)
         )
     }
